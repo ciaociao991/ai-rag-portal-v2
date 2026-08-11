@@ -1,4 +1,6 @@
 # Backend Dockerfile - FastAPI + RAG - Railway compatible
+# Build context is repository root (Railway) -> COPY backend/...
+# Also works locally via docker-compose (context: .)
 FROM python:3.10-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -7,14 +9,14 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
-# Railway: Debian slim -> apt-get available
+# System deps for python-docx, sklearn
 RUN apt-get update && apt-get install -y build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt .
+COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY app ./app
+COPY backend/app ./app
 
 RUN mkdir -p data/uploads
 

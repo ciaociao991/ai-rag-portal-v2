@@ -1,19 +1,19 @@
 services:
   backend:
     build:
-      context: ./backend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: backend/Dockerfile
     ports:
-      - "8000:8000"
+      - "${BACKEND_PORT:-8000}:${BACKEND_PORT:-8000}"
     environment:
-      - PORT=8000
+      - PORT=${BACKEND_PORT:-8000}
       - JWT_SECRET=dev-secret-change-me
       - OPENAI_API_KEY=${OPENAI_API_KEY:-}
-      - CORS_ORIGINS=http://localhost:3000
+      - CORS_ORIGINS=http://localhost:${FRONTEND_PORT:-3000}
     volumes:
       - backend_data:/app/data
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      test: ["CMD-SHELL", "python -c \"import os,urllib.request; p=os.getenv('PORT','8000'); urllib.request.urlopen(f'http://localhost:{p}/health')\""]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -23,11 +23,12 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        NEXT_PUBLIC_API_BASE_URL: http://localhost:8000
+        NEXT_PUBLIC_API_BASE_URL: http://localhost:${BACKEND_PORT:-8000}
     ports:
-      - "3000:3000"
+      - "${FRONTEND_PORT:-3000}:${FRONTEND_PORT:-3000}"
     environment:
-      - NEXT_PUBLIC_API_BASE_URL=http://localhost:8000
+      - PORT=${FRONTEND_PORT:-3000}
+      - NEXT_PUBLIC_API_BASE_URL=http://localhost:${BACKEND_PORT:-8000}
     depends_on:
       backend:
         condition: service_healthy

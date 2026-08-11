@@ -1,24 +1,17 @@
-FROM node:20-alpine AS deps
+FROM node:18-alpine
+
 WORKDIR /app
+
 COPY package.json package-lock.json* ./
-RUN npm ci || npm install
 
-FROM node:20-alpine AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+RUN npm ci
+
 COPY . .
-RUN mkdir -p public
-ARG NEXT_PUBLIC_API_BASE_URL
-ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
-RUN echo "Building with NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL" && npm run build
 
-FROM node:20-alpine AS runner
-WORKDIR /app
-ENV NODE_ENV=production
+RUN npm run build
+
 ENV PORT=3000
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
+
 EXPOSE 3000
-# Railway injects PORT; Next standalone server.js respects process.env.PORT
-CMD ["sh", "-c", "node server.js"]
+
+CMD ["npm", "run", "start", "--", "-p", "3000"]
