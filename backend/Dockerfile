@@ -9,7 +9,6 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
-# System deps for python-docx, sklearn
 RUN apt-get update && apt-get install -y build-essential \
     && rm -rf /var/lib/apt/lists/*
 
@@ -22,5 +21,5 @@ RUN mkdir -p data/uploads
 
 EXPOSE 8000
 
-# Railway injects PORT, fallback 8000 for local
+# Railway injects PORT; must bind 0.0.0.0 and use $PORT
 CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]

@@ -46,6 +46,11 @@ app.include_router(auth_router)
 app.include_router(files_router)
 app.include_router(query_router)
 
+# Fallback health endpoint directly on app (ensures Railway finds /health even if router prefix changes)
+@app.get("/health")
+def health_direct():
+    return {"status": "ok"}
+
 @app.on_event("startup")
 async def startup():
     settings.data_dir.mkdir(parents=True, exist_ok=True)
