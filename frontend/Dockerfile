@@ -7,7 +7,6 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-# Ensure public exists so COPY in runner never fails (checksum requires existing dir)
 RUN mkdir -p public
 ARG NEXT_PUBLIC_API_BASE_URL
 ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
@@ -16,8 +15,10 @@ RUN echo "Building with NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL" && n
 FROM node:20-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
+ENV PORT=3000
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 EXPOSE 3000
-CMD ["node", "server.js"]
+# Railway injects PORT; Next standalone server.js respects process.env.PORT
+CMD ["sh", "-c", "node server.js"]
