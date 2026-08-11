@@ -1,0 +1,15 @@
+{
+  "files": [
+    {
+      "id": "9b6c3540-d2f2-4762-867a-61f8ac051010",
+      "filename": "test.txt",
+      "saved_path": "data/uploads/9b6c3540-d2f2-4762-867a-61f8ac051010_test.txt",
+      "size": 108,
+      "content_type": "text/plain",
+      "uploaded_at": "2026-08-11T05:07:35.856706+00:00",
+      "indexed": true,
+      "chunks": 1,
+      "indexed_at": "2026-08-11T05:07:35.868080+00:00"
+    }
+  ]
+}

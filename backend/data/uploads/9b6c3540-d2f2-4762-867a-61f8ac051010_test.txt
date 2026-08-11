@@ -1,0 +1,1 @@
+Il RAG (Retrieval Augmented Generation) combina ricerca semantica e LLM. Il vettore store indicizza i chunk.

@@ -1,0 +1,14 @@
+node_modules
+.next
+dist
+__pycache__
+*.pyc
+.venv
+venv
+.env
+data/uploads/*
+data/*.json
+!.gitkeep
+.DS_Store
+coverage
+.pytest_cache

@@ -1,0 +1,11 @@
+{
+  "chunks": [
+    {
+      "id": "9b6c3540-d2f2-4762-867a-61f8ac051010__0",
+      "file_id": "9b6c3540-d2f2-4762-867a-61f8ac051010",
+      "filename": "test.txt",
+      "text": "Il RAG (Retrieval Augmented Generation) combina ricerca semantica e LLM. Il vettore store indicizza i chunk.",
+      "chunk_index": 0
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: backend/requirements.txt
+      - name: Install backend deps
+        run: pip install -r backend/requirements.txt
+        working-directory: .
+      - name: Lint (ruff if available)
+        run: |
+          pip install ruff || true
+          ruff check backend/app || echo "ruff warnings (non-blocking)"
+      - name: Tests
+        run: pytest -q
+        working-directory: backend
+      - name: Build Docker (backend)
+        run: docker build -t rag-backend:ci ./backend
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: frontend/package.json
+      - run: npm ci
+        working-directory: frontend
+      - run: npm run lint --if-present
+        working-directory: frontend
+      - run: npm run typecheck --if-present
+        working-directory: frontend
+      - name: Build (check API_BASE log)
+        working-directory: frontend
+        run: |
+          NEXT_PUBLIC_API_BASE_URL=https://api.example.com npm run build
+          echo "Checking API_BASE in build..."
+          grep -r "api.example.com" .next || echo "API_BASE not found in .next (check NEXT_PUBLIC_API_BASE_URL handling)"
+      - name: Build Docker (frontend)
+        run: docker build --build-arg NEXT_PUBLIC_API_BASE_URL=https://api.example.com -t rag-frontend:ci ./frontend
+
+  deploy-railway:
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: [backend, frontend]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to Railway (via CLI)
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
+          RAILWAY_SERVICE_BACKEND: ${{ secrets.RAILWAY_SERVICE_BACKEND }}
+          RAILWAY_SERVICE_FRONTEND: ${{ secrets.RAILWAY_SERVICE_FRONTEND }}
+        run: |
+          if [ -z "$RAILWAY_TOKEN" ]; then
+            echo "RAILWAY_TOKEN not set — skipping deploy (configure secrets to enable)."
+            exit 0
+          fi
+          npm i -g @railway/cli
+          railway up --service "$RAILWAY_SERVICE_BACKEND" --environment production || railway up
+          echo "Deploy triggered. Check Railway dashboard for logs."
