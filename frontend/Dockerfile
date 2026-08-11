@@ -3,15 +3,18 @@ FROM node:18-alpine
 WORKDIR /app
 
 COPY package.json package-lock.json* ./
-
 RUN npm ci
 
 COPY . .
 
 RUN npm run build
 
-ENV PORT=3000
+# Railway sets PORT automatically
+ENV PORT=$PORT
 
-EXPOSE 3000
+# Expose the port Railway will use
+EXPOSE $PORT
 
-CMD ["npm", "run", "start", "--", "-p", "3000"]
+# Start Next.js on the correct port
+CMD ["npm", "run", "start", "--", "-p", "$PORT"]
+
