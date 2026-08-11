@@ -9,12 +9,12 @@ COPY . .
 
 RUN npm run build
 
-# Railway sets PORT automatically
-ENV PORT=$PORT
+# Usa una porta fissa perché Railway non può leggere $PORT durante la build
+ENV PORT=3000
 
-# Expose the port Railway will use
-EXPOSE $PORT
+# Espone la porta corretta
+EXPOSE 3000
 
-# Start Next.js on the correct port
-CMD ["npm", "run", "start", "--", "-p", "$PORT"]
+# Avvia Next.js sulla porta corretta
+CMD ["npm", "run", "start", "--", "-p", "3000"]
 
