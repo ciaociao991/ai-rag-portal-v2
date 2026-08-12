@@ -7,3 +7,7 @@ export function Badge({ children, tone = "neutral" }: { children: React.ReactNod
   };
   return <span className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-medium tracking-wide ${map[tone]}`}>{children}</span>;
 }
+export function Dot({ tone = "neutral" }: { tone?: "success" | "warning" | "neutral" }) {
+  const c = tone === "success" ? "bg-emerald-500" : tone === "warning" ? "bg-amber-500" : "bg-slate-300";
+  return <span className={`h-2 w-2 rounded-full ${c}`} />;
+}
