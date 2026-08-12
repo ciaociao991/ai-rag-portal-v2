@@ -4,14 +4,20 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        ink: "#0f172a",
-        muted: "#64748b",
-        line: "#e2e8f0",
-        accent: "#0ea5e9",
+        ink: "#0B1220",
+        muted: "#667085",
+        line: "#E5E7EB",
+        surface: "#F8FAFC",
+        accent: "#0F766E",
+        "accent-soft": "#F0FDFA",
       },
       fontFamily: {
-        sans: ["ui-sans-system", "system-ui", "sans-serif"],
-        mono: ["ui-monospace", "monospace"],
+        sans: ["Inter", "ui-sans-system", "system-ui", "-apple-system", "sans-serif"],
+        mono: ["JetBrains Mono", "ui-monospace", "SFMono-Regular", "monospace"],
+      },
+      boxShadow: {
+        card: "0 1px 2px rgba(16,24,40,0.06), 0 1px 3px rgba(16,24,40,0.08)",
+        "card-hover": "0 4px 12px rgba(16,24,40,0.08), 0 2px 8px rgba(16,24,40,0.06)",
       },
     },
   },

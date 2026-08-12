@@ -3,8 +3,31 @@
 @tailwind utilities;
 
 :root {
-  --bg: #ffffff;
-  --fg: #0f172a;
+  --bg: #FFFFFF;
+  --fg: #0B1220;
 }
-html, body { background: var(--bg); color: var(--fg); }
-* { font-variant-ligatures: common-ligatures; }
+
+html, body {
+  background: var(--bg);
+  color: var(--fg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  font-variant-ligatures: common-ligatures;
+}
+
+/* Focus ring */
+*:focus-visible {
+  outline: 2px solid #0F766E;
+  outline-offset: 2px;
+}
+
+/* Scrollbar subtle */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-thumb { background: #D0D5DD; border-radius: 999px; }
+::-webkit-scrollbar-track { background: transparent; }
+
+/* Selection */
+::selection { background: #CCFBF1; }
