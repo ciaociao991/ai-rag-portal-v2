@@ -14,4 +14,6 @@ ENV PORT=3000
 
 EXPOSE 3000
 
-CMD ["npm", "run", "start", "--", "-p", "3000"]
+CMD ["node", ".next/standalone/server.js", "-p", "${PORT:-3000}"]
+
+
